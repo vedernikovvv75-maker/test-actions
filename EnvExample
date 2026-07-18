@@ -8,4 +8,5 @@ APP_PORT=8000
 # SSH_PRIVATE_KEY=<<private key contents>>
 # SSH_PORT=22
 # GHCR_USER=vedernikovvv75-maker
-# GHCR_TOKEN=<<PAT with read:packages (and write:packages if needed)>>
+# GHCR_TOKEN=<<PAT with write:packages + read:packages>>
+# (если PAT лежит в TEST_ACTIONS_SECRET — workflow тоже его подхватит)
