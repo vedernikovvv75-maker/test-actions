@@ -1,0 +1,11 @@
+# Application
+APP_HOST=0.0.0.0
+APP_PORT=8000
+
+# GitHub Actions secrets (задать в Settings → Secrets and variables → Actions):
+# SSH_HOST=your.server.ip
+# SSH_USER=deploy
+# SSH_PRIVATE_KEY=<<private key contents>>
+# SSH_PORT=22
+# GHCR_USER=vedernikovvv75-maker
+# GHCR_TOKEN=<<PAT with read:packages (and write:packages if needed)>>
