@@ -40,8 +40,9 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.GHCR_USER || github.repository_owner }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          username: ${{ secrets.GHCR_USER || github.actor }}
+          # Prefer GHCR_TOKEN; fallback if PAT was saved as TEST_ACTIONS_SECRET
+          password: ${{ secrets.GHCR_TOKEN || secrets.TEST_ACTIONS_SECRET }}
 
       - name: Extract Docker metadata
         id: meta
@@ -72,8 +73,8 @@ jobs:
       - name: Pull image and restart container on server
         uses: appleboy/ssh-action@v1.2.1
         env:
-          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
-          GHCR_USER: ${{ secrets.GHCR_USER || github.repository_owner }}
+          GHCR_TOKEN: ${{ secrets.GHCR_TOKEN || secrets.TEST_ACTIONS_SECRET }}
+          GHCR_USER: ${{ secrets.GHCR_USER || github.actor }}
           IMAGE: ${{ needs.build-and-push.outputs.image }}:latest
           CONTAINER_NAME: ${{ env.CONTAINER_NAME }}
           APP_PORT: ${{ env.APP_PORT }}
@@ -86,7 +87,9 @@ jobs:
           script: |
             set -e
 
-            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            if [ -n "${GHCR_TOKEN:-}" ]; then
+              echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
+            fi
 
             docker pull "$IMAGE"
 
